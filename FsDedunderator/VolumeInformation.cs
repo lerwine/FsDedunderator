@@ -94,17 +94,17 @@ namespace FsDedunderator
         {
             if (directory == null)
                 _root = new DirectoryInfo(Environment.SystemDirectory).Root;
-            else
-            {
-                _root = directory.Root;
-                if (!_root.Exists)
-                {
-                    Flags = (new VolumeInformation()).Flags;
-                    FileSystemName = "";
-                    VolumeName = "";
-                }
-            }
-            _Refresh();
+           
+            StringBuilder volumeNameBuffer = new StringBuilder(InteropStringCapacity);
+            StringBuilder fsn = new StringBuilder(InteropStringCapacity);
+            if (!GetVolumeInformation(_root.FullName, volumeNameBuffer, InteropStringCapacity, out uint sn, out uint maxNameLength, out FileSystemFeature flags, fsn, InteropStringCapacity))
+                Marshal.ThrowExceptionForHR(Marshal.GetHRForLastWin32Error());
+            VolumeName = volumeNameBuffer.ToString();
+            FileSystemName = fsn.ToString();
+            Flags = flags;
+            SerialNumber = sn;
+            MaxNameLength = maxNameLength;
+            _nameComparer = (IsCaseSensitive) ? StringComparer.InvariantCulture : StringComparer.InvariantCultureIgnoreCase;
         }
 
         /// <summary>
@@ -116,32 +116,6 @@ namespace FsDedunderator
 
         #region Methods
 
-        private void _Refresh()
-        {
-            if (_root.Exists)
-            {
-                StringBuilder volumeNameBuffer = new StringBuilder(InteropStringCapacity);
-                StringBuilder fsn = new StringBuilder(InteropStringCapacity);
-                if (!GetVolumeInformation(_root.FullName, volumeNameBuffer, InteropStringCapacity, out uint sn, out uint maxNameLength, out FileSystemFeature flags, fsn, InteropStringCapacity))
-                    Marshal.ThrowExceptionForHR(Marshal.GetHRForLastWin32Error());
-                VolumeName = volumeNameBuffer.ToString();
-                FileSystemName = fsn.ToString();
-                Flags = flags;
-                SerialNumber = sn;
-                MaxNameLength = maxNameLength;
-            }
-            _nameComparer = (IsCaseSensitive) ? StringComparer.InvariantCulture : StringComparer.InvariantCultureIgnoreCase;
-        }
-
-        /// <summary>
-        /// Refreshes the state of the object.
-        /// </summary>
-        public void Refresh()
-        {
-            _root.Refresh();
-            _Refresh();
-        }
-
         [DllImport("Kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public extern static bool GetVolumeInformation(string rootPathName, StringBuilder volumeNameBuffer, int volumeNameSize, out uint volumeSerialNumber,
@@ -152,9 +126,7 @@ namespace FsDedunderator
         /// </summary>
         /// <param name="other">Other <see cref="VolumeInformation"/> to compare.</param>
         /// <returns><c>true</c> if the current <see cref="VolumeInformation"/> is equal to <paramref name="other"/>; otherwise, <c>false</c>.</returns>
-        public bool Equals(VolumeInformation other) => other != null && (ReferenceEquals(this, other) || _root.FullName == other._root.FullName ||
-            (!(Flags.HasFlag(FileSystemFeature.CaseSensitiveSearch) || other.Flags.HasFlag(FileSystemFeature.CaseSensitiveSearch)) &&
-            _nameComparer.Equals(_root.FullName, other._root.FullName)));
+        public bool Equals(VolumeInformation other) => other != null && (ReferenceEquals(this, other) || SerialNumber == other.SerialNumber);
 
         /// <summary>
         /// Determines whether the current <see cref="VolumeInformation"/> object is equal to another object.
@@ -181,11 +153,11 @@ namespace FsDedunderator
         /// Gets a normalized path string.
         /// </summary>
         /// <param name="path">Path string to normalize.</param>
-        /// <param name="keelRelative">If <c>true</c>, then path is not resolved to a full path name; otherwise, the path is resolved and normalized to a fully qualified path name.</param>
+        /// <param name="keepRelative">If <c>true</c>, then path is not resolved to a full path name; otherwise, the path is resolved and normalized to a fully qualified path name.</param>
         /// <returns>The normalized path string.</returns>
-        public string NormalizePath(string path, bool keelRelative)
+        public string NormalizePath(string path, bool keepRelative)
         {
-            if (!keelRelative || Path.IsPathFullyQualified(path))
+            if (!keepRelative || Path.IsPathRooted(path))
                 return NormalizePath(path, null);
 
             if (string.IsNullOrEmpty(path) || path == ".")
@@ -195,7 +167,6 @@ namespace FsDedunderator
             if (index < 0)
                 return path;
             
-
             if (path[index] == Path.VolumeSeparatorChar)
             {
                 if (index == path.Length - 1)
@@ -248,7 +219,7 @@ namespace FsDedunderator
             if (elements.Count > 1 && elements[0] == ".")
                 elements.RemoveAt(0);
 
-            return String.Join(Path.DirectorySeparatorChar, elements);
+            return String.Join(new string(new char[] { Path.DirectorySeparatorChar }), elements);
         }
 
         /// <summary>

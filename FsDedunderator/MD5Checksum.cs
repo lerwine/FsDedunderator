@@ -10,8 +10,10 @@ namespace FsDedunderator
     /// Represents a 128-bit MD5 checksumm value.
     /// </summary>
     [StructLayout(LayoutKind.Explicit)]
-    public struct MD5Checksum : IEquatable<MD5Checksum>, IFileComparisonInfo
+    public struct MD5Checksum : IEquatable<MD5Checksum>
     {
+        public const int MD5ByteSize = 16;
+
         #region Fields
 
         private static readonly Regex HexPattern = new Regex(@"\s*([^a-fA-F\d\s]+)?([a-fA-F\d][a-fA-F\d])\s*([\-:,;]\s*)?", RegexOptions.Compiled);
@@ -20,6 +22,9 @@ namespace FsDedunderator
 
         [FieldOffset(0)]
         private readonly long _lowBits;
+
+        [FieldOffset(0)]
+        private readonly int _key0;
 
         [FieldOffset(0)]
         private readonly byte _b0;
@@ -32,6 +37,9 @@ namespace FsDedunderator
 
         [FieldOffset(3)]
         private readonly byte _b3;
+
+        [FieldOffset(4)]
+        private readonly int _key1;
 
         [FieldOffset(4)]
         private readonly byte _b4;
@@ -49,6 +57,9 @@ namespace FsDedunderator
         private readonly long _highBits;
 
         [FieldOffset(8)]
+        private readonly int _key2;
+
+        [FieldOffset(8)]
         private readonly byte _b8;
 
         [FieldOffset(9)]
@@ -59,6 +70,9 @@ namespace FsDedunderator
 
         [FieldOffset(11)]
         private readonly byte _b11;
+
+        [FieldOffset(12)]
+        private readonly int _key3;
 
         [FieldOffset(12)]
         private readonly byte _b12;
@@ -81,20 +95,44 @@ namespace FsDedunderator
         /// </summary>
         public long LowBits => _lowBits;
 
-        long IFileComparisonInfo.MD5LowBits => _lowBits;
+        /// <summary>
+        /// Contains the lower 64 bits of the MD5 checksum value.
+        /// </summary>
+        public int Key0 => _key0;
+
+        /// <summary>
+        /// Contains the lower 64 bits of the MD5 checksum value.
+        /// </summary>
+        public int Key1 => _key1;
 
         /// <summary>
         /// Contains the upper 64 bits of the MD5 checksum value.
         /// </summary>
         public long HighBits => _highBits;
 
-        long IFileComparisonInfo.MD5HighBits => _highBits;
+        /// <summary>
+        /// Contains the upper 64 bits of the MD5 checksum value.
+        /// </summary>
+        public int Key2 => _key2;
 
-        Guid? IFileComparisonInfo.ComparisonGroupID => null;
+        /// <summary>
+        /// Contains the upper 64 bits of the MD5 checksum value.
+        /// </summary>
+        public int Key3 => _key3;
 
         #endregion
 
         #region Constructors
+
+        public MD5Checksum(int key0, int key1, int key2, int key3)
+        {
+            _highBits = _lowBits = 0L;
+            _b0 = _b1 = _b2 = _b3 = _b4 = _b5 = _b6 = _b7 = _b8 = _b9 = _b10 = _b11 = _b12 = _b13 = _b14 = _b15 = (byte)0;
+            _key0 = key0;
+            _key1 = key1;
+            _key2 = key2;
+            _key3 = key3;
+        }
 
         /// <summary>
         /// Initializes a new instance of <see cref="MD5Checksum"/>.
@@ -103,13 +141,13 @@ namespace FsDedunderator
         /// <exception cref="ArgumentOutOfRangeException">Buffer was not null, empty or 16 bytes in length.</exception>
         public MD5Checksum(byte[] buffer)
         {
-            _highBits = 0L;
-            _lowBits = 0L;
+            _highBits = _lowBits = 0L;
+            _key0 = _key1 = _key2 = _key3 = 0;
             if (buffer == null || buffer.Length == 0)
                 _b0 = _b1 = _b2 = _b3 = _b4 = _b5 = _b6 = _b7 = _b8 = _b9 = _b10 = _b11 = _b12 = _b13 = _b14 = _b15 = (byte)0;
             else
             {
-                if (buffer.Length != 16)
+                if (buffer.Length != MD5ByteSize)
                     throw new ArgumentOutOfRangeException("buffer", "Buffer length must be 16 bytes");
                 _b0 = buffer[0];
                 _b1 = buffer[1];
@@ -149,8 +187,6 @@ namespace FsDedunderator
         /// <returns><c>true</c> if the current <see cref="MD5Checksum"/> is equal to <paramref name="other"/>; othwerise, <c>false</c>.</returns>
         public bool Equals(MD5Checksum other) => _highBits == other._highBits && _lowBits == other._lowBits;
 
-        public bool Equals(IFileComparisonInfo other) => other != null && other is MD5Checksum && Equals((MD5Checksum)other);
-
         /// <summary>
         /// Determines whether the current <see cref="MD5Checksum"/> is equal to another object.
         /// </summary>
@@ -164,7 +200,7 @@ namespace FsDedunderator
         /// Gets the hashcode for the current <see cref="MD5Checksum"/>.
         /// </summary>
         /// <returns>The hashcode for the current <see cref="MD5Checksum"/>.</returns>
-        public override int GetHashCode() => (int)(_lowBits & 0xFFFF) | ((int)(_highBits & 0xFFFF) << 16);
+        public override int GetHashCode() => (int)(_lowBits & 0xFFFF) | ((int)(_highBits & 0xFFFF) << MD5ByteSize);
 
         /// <summary>
         /// Gets a hexidecimal string representation of the <see cref="MD5Checksum"/>.
@@ -206,7 +242,7 @@ namespace FsDedunderator
             if (sb.Length < 32)
                 throw new FormatException("Expected 16 hexidecimal pairs; Actual: " + (sb.Length / 2).ToString());
             
-            return new MD5Checksum(BitConverter.GetBytes(long.Parse(sb.ToString(16, 16), System.Globalization.NumberStyles.HexNumber)).Concat(BitConverter.GetBytes(long.Parse(sb.ToString(0, 16), System.Globalization.NumberStyles.HexNumber))).ToArray());
+            return new MD5Checksum(BitConverter.GetBytes(long.Parse(sb.ToString(MD5ByteSize, MD5ByteSize), System.Globalization.NumberStyles.HexNumber)).Concat(BitConverter.GetBytes(long.Parse(sb.ToString(0, MD5ByteSize), System.Globalization.NumberStyles.HexNumber))).ToArray());
         }
 
         /// <summary>
@@ -251,7 +287,7 @@ namespace FsDedunderator
                 value = new MD5Checksum();
                 return false;
             }
-            value = new MD5Checksum(BitConverter.GetBytes(long.Parse(sb.ToString(16, 16), System.Globalization.NumberStyles.HexNumber)).Concat(BitConverter.GetBytes(long.Parse(sb.ToString(0, 16), System.Globalization.NumberStyles.HexNumber))).ToArray());
+            value = new MD5Checksum(BitConverter.GetBytes(long.Parse(sb.ToString(MD5ByteSize, MD5ByteSize), System.Globalization.NumberStyles.HexNumber)).Concat(BitConverter.GetBytes(long.Parse(sb.ToString(0, MD5ByteSize), System.Globalization.NumberStyles.HexNumber))).ToArray());
             return true;
         }
 
