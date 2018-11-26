@@ -58,7 +58,7 @@ namespace FsDedunderator
         public string FileSystemName { get; private set; }
 
         /// <summary>
-        /// Gets teh name of the volume.
+        /// Gets the name of the volume.
         /// </summary>
         public string VolumeName { get; private set; }
 

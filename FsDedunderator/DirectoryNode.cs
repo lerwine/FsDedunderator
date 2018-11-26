@@ -7,36 +7,90 @@ using System.Threading;
 
 namespace FsDedunderator
 {
-    public abstract class DirectoryNode : IEquatable<DirectoryNode>
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="DirectoryNode"></typeparam>
+    /// <typeparam name="DirectoryNode.DirectoryList"></typeparam>
+    public abstract class DirectoryNode : LinkedComponentElement<DirectoryNode, DirectoryNode.DirectoryList>, IEquatable<DirectoryNode>
     {
-        private FileDirectory _parent;
+        private IFileDirectory _parent;
 
-        public FileDirectory Parent
-        {
-            get => _parent;
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
+        /// <summary>
+        /// 
+        /// </summary>
+        public IFileDirectory Parent => _parent;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string Name { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public DirectoryVolume GetVolume()
+        {
+            IFileDirectory parent = _parent;
+            return (parent == null) ? null : parent.GetVolume();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
         public virtual bool Equals(DirectoryNode other)
         {
             throw new NotImplementedException();
         }
+
         public override bool Equals(object obj)
         {
             throw new NotImplementedException();
         }
+
         public override int GetHashCode()
         {
             throw new NotImplementedException();
         }
+
         public override string ToString()
         {
             throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public sealed class DirectoryList : LinkedComponentList<DirectoryList, DirectoryNode>
+        {
+            private IFileDirectory _owner;
+
+            internal DirectoryList(IFileDirectory owner)
+            {
+                if (owner == null)
+                    throw new ArgumentNullException("owner");
+                if (owner.Contents != null)
+                    throw new InvalidOperationException();
+                _owner = owner;
+            }
+
+            protected override void OnAddingItem(DirectoryNode item, long index)
+            {
+                throw new NotImplementedException();
+            }
+
+            protected override void OnItemAdded(DirectoryNode item, long index)
+            {
+                item._parent = _owner;
+            }
+
+            protected override void OnItemRemoved(DirectoryNode item, long index)
+            {
+                item._parent = null;
+            }
         }
     }
 }

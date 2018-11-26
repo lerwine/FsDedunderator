@@ -12,6 +12,9 @@ namespace FsDedunderator
     [StructLayout(LayoutKind.Explicit)]
     public struct MD5Checksum : IEquatable<MD5Checksum>
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public const int MD5ByteSize = 16;
 
         #region Fields
@@ -124,6 +127,13 @@ namespace FsDedunderator
 
         #region Constructors
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="key0"></param>
+        /// <param name="key1"></param>
+        /// <param name="key2"></param>
+        /// <param name="key3"></param>
         public MD5Checksum(int key0, int key1, int key2, int key3)
         {
             _highBits = _lowBits = 0L;
