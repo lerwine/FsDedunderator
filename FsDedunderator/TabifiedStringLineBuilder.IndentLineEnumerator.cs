@@ -91,8 +91,6 @@ namespace FsDedunderator
 						else
 						{
 							EndOfText = _nlMatch.Index;
-							if (_wsMatch.Index < EndOfText)
-								_wsMatch = null;
 							EndOfLine = _nlMatch.Index + _nlMatch.Length;
 							_nlMatch = null;
 						}
