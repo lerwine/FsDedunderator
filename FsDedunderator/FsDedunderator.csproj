@@ -61,6 +61,11 @@
     <Compile Include="LinkedComponentElement.cs" />
     <Compile Include="MD5CalculatedFileReference.cs" />
     <Compile Include="MD5Checksum.cs" />
+<<<<<<< HEAD
+=======
+    <Compile Include="TabifiedStringLineBuilder.cs" />
+    <Compile Include="TabifiedStringLineBuilder.IndentLineEnumerator.cs" />
+>>>>>>> 59df84ffa28120b99801fdb465c5222d1b711351
     <Compile Include="VolumeComponentList.cs" />
     <Compile Include="VolumeInformation.cs" />
     <Compile Include="ContentGroup\FileReferenceList.cs" />
