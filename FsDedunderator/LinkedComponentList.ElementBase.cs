@@ -6,11 +6,6 @@ using System.Threading;
 
 namespace FsDedunderator
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <typeparam name="TList"></typeparam>
-    /// <typeparam name="TElement"></typeparam>
     public abstract partial class LinkedComponentList<TList, TElement>
     {
         private TElement _firstNode = null;

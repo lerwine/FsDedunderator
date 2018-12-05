@@ -54,6 +54,8 @@ namespace FsDedunderator
 
                 int ICollection<ContentMD5Group>.Count => throw new NotImplementedException();
 
+                int ICollection.Count => throw new NotImplementedException();
+
                 internal ChecksumsList(ContentLengthGroup content) { Content = content; }
                 void ICollection<ContentMD5Group>.Add(ContentMD5Group item) => throw new NotSupportedException();
                 int IList.Add(object value) => throw new NotSupportedException();
@@ -196,15 +198,16 @@ namespace FsDedunderator
                     {
                         if (item._owner != null && ReferenceEquals(item._owner, this))
                         {
-                            List<ContentMD5Group> list = Content._innerList;
-                            for (int i = 0; i < list.Count; i++)
-                            {
-                                if (ReferenceEquals(list[i], item))
-                                {
-                                    list.RemoveAt(i);
-                                    return true;
-                                }
-                            }
+                            // List<ContentMD5Group> list = Content._innerList;
+                            // for (int i = 0; i < list.Count; i++)
+                            // {
+                            //     if (ReferenceEquals(list[i], item))
+                            //     {
+                            //         list.RemoveAt(i);
+                            //         return true;
+                            //     }
+                            // }
+                            throw new NotImplementedException();
                         }
                     }
                     finally { Monitor.Exit(Content.SyncRoot); }
@@ -223,34 +226,35 @@ namespace FsDedunderator
                         Monitor.Enter(Content.SyncRoot);
                         try
                         {
-                            if (index < Content._md5Count)
-                            {
-                                if (Content._md5Count == 1L)
-                                {
-                                    Content._firstMD5Node = Content._lastMD5Node = null;
-                                    Content._md5Count = 0;
-                                    return;
-                                }
-                                if (index == 0L)
-                                {
-                                    Content._firstMD5Node = Content._firstMD5Node._nextNode;
-                                    Content._md5Count--;
-                                    return;
-                                }
-                                ContentMD5Group node = Content._firstMD5Node;
-                                for (long i = 1L; i < index; i++)
-                                {
-                                    if (node._nextNode == null)
-                                        break;
-                                    node = node._nextNode;
-                                }
-                                if (node._nextNode != null)
-                                {
-                                    if (node._nextNode._nextNode == null)
-                                        Content._lastMD5Node
-                                    return;
-                                }
-                            }
+                            // if (index < Content._md5Count)
+                            // {
+                            //     if (Content._md5Count == 1L)
+                            //     {
+                            //         Content._firstMD5Node = Content._lastMD5Node = null;
+                            //         Content._md5Count = 0;
+                            //         return;
+                            //     }
+                            //     if (index == 0L)
+                            //     {
+                            //         Content._firstMD5Node = Content._firstMD5Node._nextNode;
+                            //         Content._md5Count--;
+                            //         return;
+                            //     }
+                            //     ContentMD5Group node = Content._firstMD5Node;
+                            //     for (long i = 1L; i < index; i++)
+                            //     {
+                            //         if (node._nextNode == null)
+                            //             break;
+                            //         node = node._nextNode;
+                            //     }
+                            //     if (node._nextNode != null)
+                            //     {
+                            //         if (node._nextNode._nextNode == null)
+                            //             Content._lastMD5Node
+                            //         return;
+                            //     }
+                            // }
+                            throw new NotImplementedException();
                         }
                         finally { Monitor.Exit(Content.SyncRoot); }
                     }
@@ -276,7 +280,8 @@ namespace FsDedunderator
                         {
                             _firstMD5Node = content._firstMD5Node;
                             _lastMD5Node = content._lastMD5Node;
-                            _md5Count = content._md5Count;
+                            // md5Count = content._md5Count;
+                            throw new NotImplementedException();
                         }
                         finally { Monitor.Exit(content.SyncRoot); }
                     }
@@ -323,13 +328,15 @@ namespace FsDedunderator
                         Monitor.Enter(content.SyncRoot);
                         try
                         {
-                            if ((_firstMD5Node == null) ? content._firstMD5Node == null : (content._md5Count == _md5Count && content._firstMD5Node != null && ReferenceEquals(content._firstMD5Node, _firstMD5Node) && ReferenceEquals(content._lastMD5Node, _lastMD5Node))
+                            if ((_firstMD5Node == null) ? content._firstMD5Node == null : (content._md5Count == _md5Count && content._firstMD5Node != null &&
+                                ReferenceEquals(content._firstMD5Node, _firstMD5Node) && ReferenceEquals(content._lastMD5Node, _lastMD5Node)))
                             {
                                 _current = null;
                                 _firstMD5Node = content._firstMD5Node;
                                 _lastMD5Node = content._lastMD5Node;
-                                _md5Count = content._md5Count;
-                                return;
+                                // _md5Count = content._md5Count;
+                                // return;
+                                throw new NotImplementedException();
                             }
                         }
                         finally { Monitor.Exit(content.SyncRoot); }

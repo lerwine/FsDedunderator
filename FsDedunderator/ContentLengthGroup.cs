@@ -29,7 +29,7 @@ namespace FsDedunderator
         /// 
         /// </summary>
         /// <param name="length"></param>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name=""/></exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name=""/> </exception>
         public ContentLengthGroup(long length)
         {
             _length = length;
