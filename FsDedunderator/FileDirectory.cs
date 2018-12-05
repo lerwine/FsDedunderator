@@ -37,6 +37,9 @@ namespace FsDedunderator
         /// <param name="checksum"></param>
         /// <param name="lastCalculated"></param>
         /// <returns></returns>
+        /// <exception cref="ArgumentNullException"><paramref name=""/></exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name=""/></exception>
+        /// <exception cref="ArgumentException"><paramref name=""/></exception>
         public DirectoryFile Add(string name, DateTime creationTime, DateTime lastModificationTime, long length, MD5Checksum checksum, DateTime lastCalculated)
         {
             throw new NotImplementedException();
@@ -50,6 +53,9 @@ namespace FsDedunderator
         /// <param name="lastModificationTime"></param>
         /// <param name="length"></param>
         /// <returns></returns>
+        /// <exception cref="ArgumentNullException"><paramref name=""/></exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name=""/></exception>
+        /// <exception cref="ArgumentException"><paramref name=""/></exception>
         public DirectoryFile Add(string name, DateTime creationTime, DateTime lastModificationTime, long length)
         {
             throw new NotImplementedException();
@@ -60,6 +66,8 @@ namespace FsDedunderator
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
+        /// <exception cref="ArgumentNullException"><paramref name=""/></exception>
+        /// <exception cref="ArgumentException"><paramref name=""/></exception>
         public FileDirectory Add(string name)
         {
             throw new NotImplementedException();

@@ -46,16 +46,29 @@ namespace FsDedunderator
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public override bool Equals(object obj)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public override int GetHashCode()
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             throw new NotImplementedException();
@@ -77,16 +90,31 @@ namespace FsDedunderator
                 _owner = owner;
             }
 
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="item"></param>
+            /// <param name="index"></param>
             protected override void OnAddingItem(DirectoryNode item, long index)
             {
                 throw new NotImplementedException();
             }
 
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="item"></param>
+            /// <param name="index"></param>
             protected override void OnItemAdded(DirectoryNode item, long index)
             {
                 item._parent = _owner;
             }
 
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="item"></param>
+            /// <param name="index"></param>
             protected override void OnItemRemoved(DirectoryNode item, long index)
             {
                 item._parent = null;

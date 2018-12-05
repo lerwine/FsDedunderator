@@ -6,6 +6,11 @@ using System.Threading;
 
 namespace FsDedunderator
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="TList"></typeparam>
+    /// <typeparam name="TElement"></typeparam>
     public abstract partial class LinkedComponentList<TList, TElement>
     {
         private TElement _firstNode = null;
@@ -38,6 +43,9 @@ namespace FsDedunderator
 
             #endregion
 
+            /// <summary>
+            /// 
+            /// </summary>
             protected internal TList Container => _container;
 
             internal object SyncRoot { get; } = new object();
@@ -686,6 +694,10 @@ namespace FsDedunderator
                     });
                 }
 
+                /// <summary>
+                /// 
+                /// </summary>
+                /// <param name="disposing"></param>
                 protected virtual void Dispose(bool disposing)
                 {
                     TList list = _list;
@@ -693,6 +705,9 @@ namespace FsDedunderator
                         list.InvokeInMonitorLock(() => _list = null);
                 }
 
+                /// <summary>
+                /// 
+                /// </summary>
                 public void Dispose() => Dispose(true);
             }
         }

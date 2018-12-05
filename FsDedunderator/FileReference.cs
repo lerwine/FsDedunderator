@@ -41,6 +41,8 @@ namespace FsDedunderator
         /// </summary>
         /// <param name="file"></param>
         /// <param name="content"></param>
+        /// <exception cref="ArgumentNullException"><paramref name=""/></exception>
+        /// <exception cref="ArgumentException"><paramref name=""/></exception>
         protected FileReference(DirectoryFile file, T content)
         {
             File = file;
@@ -57,16 +59,29 @@ namespace FsDedunderator
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public override bool Equals(object obj)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public override int GetHashCode()
         {
             throw new NotImplementedException();
         }
         
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             throw new NotImplementedException();

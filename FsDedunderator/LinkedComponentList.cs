@@ -29,6 +29,7 @@ namespace FsDedunderator
         /// </summary>
         /// <exception cref="ArgumentNullException">value is null.</exception>
         /// <exception cref="ArgumentOutOfRangeException">value already belongs to the current list or to another list.</exception>
+        /// <exception cref="IndexOutOfRangeException"><paramref name="index"/> is less than zero or greater than the number of items in teh list.</exception>
         public TElement this[long index]
         {
             get => ElementBase.Get((TList)this, index);
@@ -67,8 +68,8 @@ namespace FsDedunderator
         /// Adds an item to the System.Collections.Generic.ICollection`1.
         /// </summary>
         /// <param name="item">The object to add to the System.Collections.Generic.ICollection`1.</param>
-        /// <exception cref="ArgumentNullException">item is null.</exception>
-        /// <exception cref="ArgumentOutOfRangeException">item already belongs to the current list or to another list.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="item"/> is null.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="item"/> already belongs to the current list or to another list.</exception>
         protected void Add(TElement item) => ElementBase.Add((TList)this, item);
 
         /// <summary>
@@ -79,7 +80,7 @@ namespace FsDedunderator
         /// the third parameter of the function represents the index of the element.</param>
         /// <typeparam name="TAccumulate">The type of the accumulator value.</typeparam>
         /// <returns>The final accumulator value.</returns>
-        /// <exception cref="ArgumentNullException">func is null.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="func"/> is null.</exception>
         public TAccumulate Aggregate<TAccumulate>(TAccumulate seed, Func<TAccumulate, TElement, long, TAccumulate> func)
         {
             if (func == null)
@@ -109,8 +110,8 @@ namespace FsDedunderator
         /// </summary>
         /// <param name="array">The one-dimensional System.Array that is the destination of the elements copied from System.Collections.Generic.ICollection`1. The System.Array must have zero-based indexing.</param>
         /// <param name="arrayIndex">The zero-based index in array at which copying begins.</param>
-        /// <exception cref="ArgumentNullException">array is null.</exception>
-        /// <exception cref="ArgumentOutOfRangeException">arrayIndex is less than 0.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="array" /> is null.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="arrayIndex" /> is less than 0.</exception>
         /// <exception cref="ArgumentException">The number of elements in the source System.Collections.Generic.ICollection`1 is greater than the available space from arrayIndex to the end of the destination array.</exception>
         public void CopyTo(TElement[] array, int arrayIndex) => ElementBase.CopyTo((TList)this, array, arrayIndex);
 
@@ -119,7 +120,7 @@ namespace FsDedunderator
         /// </summary>
         /// <param name="action">Delegate method to invoke on each of the list elements;
         /// the second parameter of the function represents the index of the element.</param>
-        /// <exception cref="ArgumentNullException">action is null.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="action"/> is null.</exception>
         public void ForEach(Action<TElement, long> action)
         {
             if (action == null)
@@ -162,10 +163,10 @@ namespace FsDedunderator
         /// </summary>
         /// <param name="index">The zero-based index at which item should be inserted.</param>
         /// <param name="item">The object to insert into the System.Collections.Generic.IList`1.</param>
-        /// <exception cref="ArgumentNullException">item is null.</exception>
-        /// <exception cref="ArgumentOutOfRangeException">item already belongs to the current list or to another list.
+        /// <exception cref="ArgumentNullException"><paramref name=""/> is null.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name=""/> already belongs to the current list or to another list.
         /// <para>-or</para>
-        /// <para>index is not a valid index in the System.Collections.Generic.IList`1.</para></exception>
+        /// <para><paramref name=""/> is not a valid index in the System.Collections.Generic.IList`1.</para></exception>
         protected void Insert(long index, TElement item) => ElementBase.Insert((TList)this, index, item);
         
         /// <summary>
@@ -180,7 +181,7 @@ namespace FsDedunderator
         /// Removes the System.Collections.Generic.IList`1 item at the specified index.
         /// </summary>
         /// <param name="index">The zero-based index of the item to remove.</param>
-        /// <exception cref="ArgumentOutOfRangeException">index is not a valid index in the System.Collections.Generic.IList`1.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is not a valid position within the System.Collections.Generic.IList`1.</exception>
         protected virtual void RemoveAt(long index) => ElementBase.RemoveAt((TList)this, index);
 
         /// <summary>
@@ -190,7 +191,7 @@ namespace FsDedunderator
         /// the second parameter of the function represents the index of the element.</param>
         /// <typeparam name="TResult">The type of the value returned by selector.</typeparam>
         /// <returns>An System.Collections.Generic.IEnumerable`1 whose elements are the result of invoking the transform function on each list element.</returns>
-        /// <exception cref="ArgumentNullException">selector is null.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="selector"/> is null.</exception>
         public IEnumerable<TResult> Select<TResult>(Func<TElement, long, TResult> selector)
         {
             using (ElementBase.Enumerator enumerator = new ElementBase.Enumerator((TList)this))
@@ -209,6 +210,10 @@ namespace FsDedunderator
         /// <returns>true if the current list is changeable within the specified number of milliseconds; otherwise, false.</returns>
         protected bool WaitCollectionChangable(int millisecondsTimeout) => GetInMonitorLock(() => _collectionChangableEvent.WaitOne(millisecondsTimeout));
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="disposing"></param>
         protected virtual void Dispose(bool disposing)
         {
             Monitor.Enter(SyncRoot);
@@ -228,6 +233,9 @@ namespace FsDedunderator
             finally { Monitor.Exit(SyncRoot); }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void Dispose() => Dispose(true);
         
         private void InvokeInChange<T1, T2>(Action<T1, T2> action, T1 arg1, T2 arg2) => InvokeInMonitorLock(() =>

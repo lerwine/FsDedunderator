@@ -148,7 +148,7 @@ namespace FsDedunderator
         /// Initializes a new instance of <see cref="MD5Checksum"/>.
         /// </summary>
         /// <param name="buffer">A <seealso cref="Byte"/> array representing the 128-bit MD5 checksum. A null value or empty array initializes a zero checksum value.</param>
-        /// <exception cref="ArgumentOutOfRangeException">Buffer was not null, empty or 16 bytes in length.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="buffer"/> was not null, empty or 16 bytes in length.</exception>
         public MD5Checksum(byte[] buffer)
         {
             _highBits = _lowBits = 0L;

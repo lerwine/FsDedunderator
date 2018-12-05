@@ -38,12 +38,23 @@ namespace FsDedunderator
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         protected virtual MD5Checksum? BaseChecksum => null;
 
         MD5Checksum? IContentInfo.Checksum => BaseChecksum;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         protected ContentGroup() { FileReferences = new FileReferenceList(this); }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public abstract IEnumerable<IFileReference> GetAllFileReferences();
     }
 }

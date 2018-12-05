@@ -19,6 +19,8 @@ namespace FsDedunderator
         /// </summary>
         /// <param name="file">File information to import.</param>
         /// <returns>The imported directory file object.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name=""/></exception>
+        /// <exception cref="FileNotFoundException"><paramref name=""/></exception>
         public DirectoryFile Import(FileInfo file)
         {
             throw new NotImplementedException();
@@ -29,6 +31,18 @@ namespace FsDedunderator
             throw new NotImplementedException();
         }
         
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="rootPathName"></param>
+        /// <param name="volumeNameBuffer"></param>
+        /// <param name="volumeNameSize"></param>
+        /// <param name="volumeSerialNumber"></param>
+        /// <param name="maximumComponentLength"></param>
+        /// <param name="fileSystemFlags"></param>
+        /// <param name="fileSystemNameBuffer"></param>
+        /// <param name="nFileSystemNameSize"></param>
+        /// <returns></returns>
         [DllImport("Kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public extern static bool GetVolumeInformation(string rootPathName, StringBuilder volumeNameBuffer, int volumeNameSize, out uint volumeSerialNumber,

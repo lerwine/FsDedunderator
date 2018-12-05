@@ -61,7 +61,6 @@
     <Compile Include="LinkedComponentElement.cs" />
     <Compile Include="MD5CalculatedFileReference.cs" />
     <Compile Include="MD5Checksum.cs" />
-    <Compile Include="TabifiedStringLineBuilder.cs" />
     <Compile Include="VolumeComponentList.cs" />
     <Compile Include="VolumeInformation.cs" />
     <Compile Include="ContentGroup\FileReferenceList.cs" />
